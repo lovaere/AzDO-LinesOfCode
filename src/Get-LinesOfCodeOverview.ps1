@@ -23,7 +23,7 @@
   Creation Date:  01/06/2023
   
 .EXAMPLE
-  .\Get-LinesOfCodeOverview.ps1 --OrganizationName MyOrg --ProjectName MyProject --PatToken MyPatToken
+  .\Get-LinesOfCodeOverview.ps1 -OrganizationName MyOrg -ProjectName MyProject -PatToken MyPatToken
 #>
 
 param(
