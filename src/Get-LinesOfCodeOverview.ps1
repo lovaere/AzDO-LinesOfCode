@@ -56,7 +56,7 @@ foreach($repository in $repositories.value){
 
   git -c http.extraHeader="Authorization: Basic $token" clone $repository.remoteUrl
   cloc "./$($spaceSafeRepoName)" --out "$($spaceSafeRepoName).txt"
-  rm -rf "./$($spaceSafeRepoName)"
+  Remove-Item -Recurse -Force "./$($spaceSafeRepoName)"
 }
 
 # Make a sum of all the lines of code
