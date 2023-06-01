@@ -49,4 +49,20 @@ $header = @{Authorization = "Basic $token"}
 $baseUrl = "https://dev.azure.com/$OrganizationName/$ProjectName/_apis/git/repositories?api-version=6.0"
 $repositories = Invoke-RestMethod -Uri $baseUrl -Method Get -Headers $header
 
+# Calculate lines of code per repository
+foreach($repository in $repositories.value){
+  Write-Host "Calculating lines of code for $($repository.name)"
+
+  git -c http.extraHeader="Authorization: Basic $token" clone $repository.remoteUrl
+  cloc "./$($repository.name)" --out "$($repository.name).txt"
+  rm -rf "./$($repository.name)"
+}
+
+# Make a sum of all the lines of code
+$sumCommand = "cloc --sum-reports"
+foreach($repository in $repositories.value){
+  $sumCommand += " $($repository.name).txt"
+}
+Invoke-Expression -Command $sumCommand
+
 Write-Host "Found $($repositories.count) repositories"
