@@ -52,16 +52,18 @@ $repositories = Invoke-RestMethod -Uri $baseUrl -Method Get -Headers $header
 # Calculate lines of code per repository
 foreach($repository in $repositories.value){
   Write-Host "Calculating lines of code for $($repository.name)"
+  $spaceSafeRepoName = $repository.name -replace " ", "%20"
 
   git -c http.extraHeader="Authorization: Basic $token" clone $repository.remoteUrl
-  cloc "./$($repository.name)" --out "$($repository.name).txt"
-  rm -rf "./$($repository.name)"
+  cloc "./$($spaceSafeRepoName)" --out "$($spaceSafeRepoName).txt"
+  rm -rf "./$($spaceSafeRepoName)"
 }
 
 # Make a sum of all the lines of code
 $sumCommand = "cloc --sum-reports"
 foreach($repository in $repositories.value){
-  $sumCommand += " $($repository.name).txt"
+  $spaceSafeRepoName = $repository.name -replace " ", "%20"
+  $sumCommand += " $($spaceSafeRepoName).txt"
 }
 Invoke-Expression -Command $sumCommand
 
